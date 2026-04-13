@@ -48,10 +48,10 @@
           </div>
 
           <nav class="sidebar-nav">
-            <a href="#" class="side-link active">Tasks</a>
-            <a href="#" class="side-link">Deadlines</a>
-            <a href="#" class="side-link">Notes</a>
-            <a href="#" class="side-link">Settings</a>
+            <button type="button" class="side-link nav-tab active" data-section="tasks">Tasks</button>
+            <button type="button" class="side-link nav-tab" data-section="deadlines">Deadlines</button>
+            <button type="button" class="side-link nav-tab" data-section="notes">Notes</button>
+            <button type="button" class="side-link nav-tab" data-section="settings">Settings</button>
           </nav>
         </div>
 
@@ -96,44 +96,124 @@
           </article>
         </section>
 
-        <section class="content-grid">
-          <div class="main-column">
-            <div class="section-head">
-              <div>
-                <h2>Active Tasks</h2>
-                <p>Track your current semester work</p>
+        <!-- TASKS SECTION -->
+        <section id="tasksSection" class="dashboard-section active">
+          <div class="content-grid">
+            <div class="main-column">
+              <div class="section-head">
+                <div>
+                  <h2>Active Tasks</h2>
+                  <p>Track your current semester work</p>
+                </div>
+
+                <div class="filter-group">
+                  <button class="filter-btn active" data-filter="all">All</button>
+                  <button class="filter-btn" data-filter="completed">Completed</button>
+                  <button class="filter-btn" data-filter="pending">Pending</button>
+                </div>
               </div>
 
-              <div class="filter-group">
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="completed">Completed</button>
-                <button class="filter-btn" data-filter="pending">Pending</button>
+              <div id="taskList" class="task-list"></div>
+
+              <div id="emptyState" class="empty-state hidden">
+                <h3>No tasks found</h3>
+                <p>Add a new task or change the filter.</p>
               </div>
             </div>
 
-            <div id="taskList" class="task-list"></div>
+            <aside class="right-column">
+              <section class="panel-card">
+                <div class="panel-card-head">
+                  <h3>Upcoming Deadlines</h3>
+                </div>
+                <div id="deadlineList" class="deadline-list"></div>
+              </section>
 
-            <div id="emptyState" class="empty-state hidden">
-              <h3>No tasks found</h3>
-              <p>Add a new task or change the filter.</p>
+              <section class="panel-card">
+                <div class="panel-card-head">
+                  <h3>Recent Notes</h3>
+                </div>
+                <div id="notesList" class="notes-list"></div>
+              </section>
+            </aside>
+          </div>
+        </section>
+
+        <!-- DEADLINES SECTION -->
+        <section id="deadlinesSection" class="dashboard-section">
+          <div class="section-head">
+            <div>
+              <h2>All Deadlines</h2>
+              <p>See all upcoming due dates in one place</p>
             </div>
           </div>
 
-          <aside class="right-column">
+          <div class="panel-card">
+            <div id="allDeadlinesList" class="deadline-list"></div>
+          </div>
+        </section>
+
+        <!-- NOTES SECTION -->
+        <section id="notesSection" class="dashboard-section">
+          <div class="section-head">
+            <div>
+              <h2>Study Notes</h2>
+              <p>Quick notes collected from your tasks</p>
+            </div>
+          </div>
+
+          <div id="allNotesGrid" class="notes-board"></div>
+        </section>
+
+        <!-- SETTINGS SECTION -->
+        <section id="settingsSection" class="dashboard-section">
+          <div class="section-head">
+            <div>
+              <h2>Settings</h2>
+              <p>Simple planner controls</p>
+            </div>
+          </div>
+
+          <div class="settings-grid">
             <section class="panel-card">
               <div class="panel-card-head">
-                <h3>Upcoming Deadlines</h3>
+                <h3>Planner Summary</h3>
               </div>
-              <div id="deadlineList" class="deadline-list"></div>
+
+              <div class="settings-summary">
+                <div class="settings-stat">
+                  <span>Total Tasks</span>
+                  <strong id="settingsTotal">0</strong>
+                </div>
+
+                <div class="settings-stat">
+                  <span>Completed</span>
+                  <strong id="settingsCompleted">0</strong>
+                </div>
+
+                <div class="settings-stat">
+                  <span>Pending</span>
+                  <strong id="settingsPending">0</strong>
+                </div>
+
+                <div class="settings-stat">
+                  <span>Focus Mode</span>
+                  <strong id="settingsFocus">Off</strong>
+                </div>
+              </div>
             </section>
 
             <section class="panel-card">
               <div class="panel-card-head">
-                <h3>Recent Notes</h3>
+                <h3>Quick Actions</h3>
               </div>
-              <div id="notesList" class="notes-list"></div>
+
+              <div class="settings-actions">
+                <button id="clearCompletedBtn" class="ghost-btn">Clear Completed Tasks</button>
+                <button id="clearAllBtn" class="danger-btn">Clear All Tasks</button>
+              </div>
             </section>
-          </aside>
+          </div>
         </section>
       </main>
     </div>
@@ -186,9 +266,10 @@
   </aside>
 
   <nav class="mobile-nav">
-    <a href="#" class="mobile-link active">Tasks</a>
-    <a href="#" class="mobile-link">Deadlines</a>
-    <a href="#" class="mobile-link">Notes</a>
+    <button type="button" class="mobile-link nav-tab active" data-section="tasks">Tasks</button>
+    <button type="button" class="mobile-link nav-tab" data-section="deadlines">Deadlines</button>
+    <button type="button" class="mobile-link nav-tab" data-section="notes">Notes</button>
+    <button type="button" class="mobile-link nav-tab" data-section="settings">Settings</button>
   </nav>
 </body>
 </html>

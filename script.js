@@ -27,6 +27,20 @@ const taskNoteInput = document.getElementById("taskNote");
 const focusModeBtn = document.getElementById("focusModeBtn");
 const emptyState = document.getElementById("emptyState");
 
+const navTabs = document.querySelectorAll(".nav-tab");
+const dashboardSections = document.querySelectorAll(".dashboard-section");
+
+const allDeadlinesList = document.getElementById("allDeadlinesList");
+const allNotesGrid = document.getElementById("allNotesGrid");
+
+const settingsTotal = document.getElementById("settingsTotal");
+const settingsCompleted = document.getElementById("settingsCompleted");
+const settingsPending = document.getElementById("settingsPending");
+const settingsFocus = document.getElementById("settingsFocus");
+
+const clearCompletedBtn = document.getElementById("clearCompletedBtn");
+const clearAllBtn = document.getElementById("clearAllBtn");
+
 const STORAGE_KEY = "student_life_planner_tasks";
 const FOCUS_KEY = "student_life_planner_focus_mode";
 
@@ -151,6 +165,8 @@ function getVisibleTasks() {
   const searchValue = searchInput.value.trim().toLowerCase();
 
   return sortByDate(tasks).filter((task) => {
+    const noteText = (task.note || "").toLowerCase();
+
     const matchesFilter =
       currentFilter === "all" ||
       (currentFilter === "completed" && task.completed) ||
@@ -158,7 +174,7 @@ function getVisibleTasks() {
 
     const matchesSearch =
       task.title.toLowerCase().includes(searchValue) ||
-      task.note.toLowerCase().includes(searchValue);
+      noteText.includes(searchValue);
 
     return matchesFilter && matchesSearch;
   });
@@ -267,7 +283,7 @@ function renderDeadlines() {
 }
 
 function renderNotes() {
-  const noteTasks = tasks.filter((task) => task.note.trim()).slice(0, 4);
+  const noteTasks = tasks.filter((task) => (task.note || "").trim()).slice(0, 4);
 
   if (noteTasks.length === 0) {
     notesList.innerHTML = `
@@ -294,19 +310,106 @@ function renderNotes() {
     .join("");
 }
 
-function renderAll() {
-  updateStats();
-  renderTasks();
-  renderDeadlines();
-  renderNotes();
-  updateFilterButtons();
-  updateFocusModeUI();
+function switchSection(sectionName) {
+  navTabs.forEach((tab) => {
+    tab.classList.toggle("active", tab.dataset.section === sectionName);
+  });
+
+  dashboardSections.forEach((section) => {
+    section.classList.toggle("active", section.id === `${sectionName}Section`);
+  });
+}
+
+function renderFullDeadlines() {
+  const pendingTasks = sortByDate(tasks.filter((task) => !task.completed));
+
+  if (pendingTasks.length === 0) {
+    allDeadlinesList.innerHTML = `
+      <div class="deadline-item normal">
+        <div class="deadline-title">No deadlines yet</div>
+        <div class="deadline-date">Add a pending task to see deadlines here.</div>
+      </div>
+    `;
+    return;
+  }
+
+  allDeadlinesList.innerHTML = pendingTasks
+    .map((task) => {
+      const daysLeft = getDaysLeft(task.dueDate);
+      const itemClass = daysLeft < 0 ? "overdue" : "normal";
+
+      return `
+        <div class="deadline-item ${itemClass}">
+          <div class="deadline-item-top">
+            <div>
+              <div class="deadline-title">${escapeHTML(task.title)}</div>
+              <div class="deadline-date">${escapeHTML(formatDate(task.dueDate))} • ${escapeHTML(getDeadlineText(task))}</div>
+            </div>
+            <span class="deadline-dot"></span>
+          </div>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+function renderAllNotesBoard() {
+  const noteTasks = sortByDate(tasks.filter((task) => (task.note || "").trim()));
+
+  if (noteTasks.length === 0) {
+    allNotesGrid.innerHTML = `
+      <div class="note-item">
+        <div class="note-title">No notes yet</div>
+        <div class="note-text">Your saved study notes will appear here.</div>
+      </div>
+    `;
+    return;
+  }
+
+  allNotesGrid.innerHTML = noteTasks
+    .map((task) => {
+      return `
+        <div class="note-item">
+          <div class="note-title">${escapeHTML(task.title)}</div>
+          <div class="note-text">${escapeHTML(task.note)}</div>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+function updateSettingsPanel() {
+  const total = tasks.length;
+  const completed = tasks.filter((task) => task.completed).length;
+  const pending = total - completed;
+
+  settingsTotal.textContent = total;
+  settingsCompleted.textContent = completed;
+  settingsPending.textContent = pending;
+  settingsFocus.textContent = focusMode ? "On" : "Off";
 }
 
 function updateFilterButtons() {
   filterButtons.forEach((button) => {
     button.classList.toggle("active", button.dataset.filter === currentFilter);
   });
+}
+
+function updateFocusModeUI() {
+  document.body.classList.toggle("focus-mode", focusMode);
+  focusModeBtn.textContent = `Focus Mode: ${focusMode ? "On" : "Off"}`;
+}
+
+function renderAll() {
+  updateStats();
+  renderTasks();
+  renderDeadlines();
+  renderNotes();
+  renderFullDeadlines();
+  renderAllNotesBoard();
+  updateSettingsPanel();
+  updateFilterButtons();
+  updateFocusModeUI();
 }
 
 function resetForm() {
@@ -385,11 +488,6 @@ function toggleTask(id) {
   renderAll();
 }
 
-function updateFocusModeUI() {
-  document.body.classList.toggle("focus-mode", focusMode);
-  focusModeBtn.textContent = `Focus Mode: ${focusMode ? "On" : "Off"}`;
-}
-
 taskForm.addEventListener("submit", (event) => {
   event.preventDefault();
 
@@ -437,6 +535,12 @@ filterButtons.forEach((button) => {
   });
 });
 
+navTabs.forEach((tab) => {
+  tab.addEventListener("click", () => {
+    switchSection(tab.dataset.section);
+  });
+});
+
 searchInput.addEventListener("input", renderAll);
 
 openPanelBtn.addEventListener("click", () => openPanel());
@@ -448,10 +552,41 @@ focusModeBtn.addEventListener("click", () => {
   focusMode = !focusMode;
   saveFocusMode();
   updateFocusModeUI();
+  updateSettingsPanel();
+});
+
+clearCompletedBtn.addEventListener("click", () => {
+  const hasCompleted = tasks.some((task) => task.completed);
+
+  if (!hasCompleted) {
+    alert("There are no completed tasks to remove.");
+    return;
+  }
+
+  tasks = tasks.filter((task) => !task.completed);
+  saveTasks();
+  renderAll();
+});
+
+clearAllBtn.addEventListener("click", () => {
+  if (tasks.length === 0) {
+    alert("There are no tasks to clear.");
+    return;
+  }
+
+  const confirmed = confirm("Do you want to delete all tasks?");
+  if (!confirmed) return;
+
+  tasks = [];
+  saveTasks();
+  renderAll();
 });
 
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") closePanel();
+  if (event.key === "Escape") {
+    closePanel();
+  }
 });
 
 renderAll();
+switchSection("tasks");
