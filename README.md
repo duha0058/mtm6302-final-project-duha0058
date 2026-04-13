@@ -6,7 +6,6 @@ Student Life Planner Dashboard is a responsive web application designed for coll
 
 The purpose of this project is to create a complete interactive web application using **HTML, CSS, and Vanilla JavaScript**. This planner is made for busy students who need a practical tool to manage coursework on both desktop and mobile devices.
 
-The design of the project was developed from approved lo-fi wireframes and then turned into a hi-fi responsive interface.
 
 ## Features
 
@@ -28,8 +27,8 @@ The design of the project was developed from approved lo-fi wireframes and then 
 
 ## Technologies Used
 
-- HTML5
-- CSS3
+- HTML
+- CSS
 - Vanilla JavaScript
 - localStorage
 
@@ -74,3 +73,6 @@ Vijay Duhan
 ## Notes
 
 This project was created as a final course project based on a classmate’s project idea. The idea was interpreted, designed, and developed into a working responsive dashboard application using Vanilla JavaScript.
+
+## AI Documentation
+I used AI for some parts of this project to get ideas and understand how to improve the design and code
