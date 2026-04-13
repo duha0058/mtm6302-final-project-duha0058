@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Life Planner Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand-wrap">
+        <div class="brand-logo">SP</div>
+        <div>
+          <h1 class="brand-name">Student Planner</h1>
+          <p class="brand-subtitle">Academic dashboard</p>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <input
+          type="text"
+          id="searchInput"
+          class="search-input"
+          placeholder="Search tasks or notes..."
+          aria-label="Search tasks or notes"
+        />
+        <button id="openPanelBtn" class="primary-btn">Quick Add</button>
+      </div>
+    </header>
+
+    <div class="app-layout">
+      <aside class="sidebar">
+        <div class="sidebar-top">
+          <div class="profile-card">
+            <div class="profile-avatar">V</div>
+            <div>
+              <h2>PLANNER_V1</h2>
+              <p>Academic Year 2026</p>
+            </div>
+          </div>
+
+          <nav class="sidebar-nav">
+            <a href="#" class="side-link active">Tasks</a>
+            <a href="#" class="side-link">Deadlines</a>
+            <a href="#" class="side-link">Notes</a>
+            <a href="#" class="side-link">Settings</a>
+          </nav>
+        </div>
+
+        <div class="sidebar-bottom">
+          <div class="mini-card">
+            <span class="mini-label">Focus Score</span>
+            <strong id="focusScore">84%</strong>
+          </div>
+        </div>
+      </aside>
+
+      <main class="dashboard">
+        <section class="hero-section">
+          <div class="hero-text">
+            <span class="hero-badge">Weekly Insight</span>
+            <h2>Stay organized, stay ahead.</h2>
+            <p>
+              Manage your academic tasks, deadlines, and study notes in one
+              responsive dashboard.
+            </p>
+          </div>
+
+          <div class="hero-actions">
+            <button id="focusModeBtn" class="secondary-btn">Focus Mode: Off</button>
+          </div>
+        </section>
+
+        <section class="overview-grid">
+          <article class="overview-card">
+            <span>Total Tasks</span>
+            <h3 id="totalTasks">0</h3>
+          </article>
+
+          <article class="overview-card">
+            <span>Completed</span>
+            <h3 id="completedTasks">0</h3>
+          </article>
+
+          <article class="overview-card">
+            <span>Pending</span>
+            <h3 id="pendingTasks">0</h3>
+          </article>
+        </section>
+
+        <section class="content-grid">
+          <div class="main-column">
+            <div class="section-head">
+              <div>
+                <h2>Active Tasks</h2>
+                <p>Track your current semester work</p>
+              </div>
+
+              <div class="filter-group">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="completed">Completed</button>
+                <button class="filter-btn" data-filter="pending">Pending</button>
+              </div>
+            </div>
+
+            <div id="taskList" class="task-list"></div>
+
+            <div id="emptyState" class="empty-state hidden">
+              <h3>No tasks found</h3>
+              <p>Add a new task or change the filter.</p>
+            </div>
+          </div>
+
+          <aside class="right-column">
+            <section class="panel-card">
+              <div class="panel-card-head">
+                <h3>Upcoming Deadlines</h3>
+              </div>
+              <div id="deadlineList" class="deadline-list"></div>
+            </section>
+
+            <section class="panel-card">
+              <div class="panel-card-head">
+                <h3>Recent Notes</h3>
+              </div>
+              <div id="notesList" class="notes-list"></div>
+            </section>
+          </aside>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="overlay" class="overlay"></div>
+
+  <aside id="taskPanel" class="task-panel" aria-hidden="true">
+    <div class="task-panel-head">
+      <div>
+        <span class="panel-label">Planner Form</span>
+        <h2 id="panelTitle">Add New Task</h2>
+      </div>
+      <button id="closePanelBtn" class="icon-btn" aria-label="Close panel">✕</button>
+    </div>
+
+    <form id="taskForm" class="task-form">
+      <input type="hidden" id="taskId" />
+
+      <div class="form-group">
+        <label for="taskTitle">Task Title</label>
+        <input
+          type="text"
+          id="taskTitle"
+          placeholder="Enter task title"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="taskDate">Due Date</label>
+        <input type="date" id="taskDate" required />
+      </div>
+
+      <div class="form-group">
+        <label for="taskNote">Study Note</label>
+        <textarea
+          id="taskNote"
+          rows="5"
+          maxlength="180"
+          placeholder="Write a short study note..."
+        ></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" id="cancelBtn" class="ghost-btn">Cancel</button>
+        <button type="submit" id="submitBtn" class="primary-btn">Save Task</button>
+      </div>
+    </form>
+  </aside>
+
+  <nav class="mobile-nav">
+    <a href="#" class="mobile-link active">Tasks</a>
+    <a href="#" class="mobile-link">Deadlines</a>
+    <a href="#" class="mobile-link">Notes</a>
+  </nav>
+</body>
+</html>
